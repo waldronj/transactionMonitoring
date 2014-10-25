@@ -5,4 +5,15 @@ This application is intended to allow external monitoring solutions such as Ping
 
 Techonologies
 ============
-Transaction Monitoring leverages Hapi for it's web server and the creates a subprocess in which CasperJS is called to do the web testing.
+Transaction Monitoring leverages https://github.com/hapijs/hapi for it's web server and the creates a subprocess in which http://docs.casperjs.org is called to do the web testing.
+
+Getting Started
+---------------
+- npm install -g phantomjs
+- npm install -g casperjs
+- npm install -g hapi
+- Start creating your CasperJS tests in the siteTests dir.
+
+Using
+-----
+Start your app `node app.js` load the webpage in a broswer, `localhost` this should return "Transaction Monitoring" to test your custom CasperJS scripts navigate to `localhost/googleFR` as an example. Notice googleFR is already in the siteTests folder.
