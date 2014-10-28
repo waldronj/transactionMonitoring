@@ -11,7 +11,14 @@ casper.then(function() {
 });
 
 casper.then(function() {
-    console.log('clicked ok, new location is ' + this.getCurrentUrl());
+    console.log(this.getCurrentUrl());
+    if(this.getCurrentUrl() == 'http://casperjs.org/'){
+        console.log("success");
+        this.exit([10]);
+    }
+    else{
+        console.log("failure");
+    }
 });
 
 casper.run();
