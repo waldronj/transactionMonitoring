@@ -24,9 +24,8 @@ server.route({
         
         casper.on('exit', function(code){
             end = new Date()
-            elapsed = start - end
-            elapsed = elapsed * -1
-            if(code== 10){
+            elapsed = end - start
+            if(code == 10){
                 rdata = '<pingdom_http_custom_check><status>ok</status><response_time>' + elapsed + '</response_time></pingdom_http_custom_check>';
             }
             else{
