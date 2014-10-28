@@ -24,12 +24,12 @@ server.route({
         
         casper.on('exit', function(code){
             end = new Date()
-            elapsed = end - start
+            elapsed = (end - start) / 1000
             if(code == 10){
                 rdata = '<pingdom_http_custom_check><status>ok</status><response_time>' + elapsed + '</response_time></pingdom_http_custom_check>';
             }
             else{
-                rdata = '<pingdom_http_custom_check><status>down</status><elapsed>' + elapsed + '</time><pingdom_http_custom_check>';
+                rdata = '<pingdom_http_custom_check><status>down</status><response_time>' + elapsed + '</response_time></pingdom_http_custom_check>';
             }
             reply(rdata).type('text/xml');
         });
