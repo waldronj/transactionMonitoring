@@ -15,6 +15,7 @@ server.route({
     handler: function (request, reply) {
         console.log(request.params.name);
         var spawn = require('child_process').spawn,
+        start = new Date();
         casper = spawn('casperjs', ['test', './siteTests/' + request.params.name + '.js']);
         
         casper.stdout.on('data', function (data) {
@@ -22,13 +23,16 @@ server.route({
         });
         
         casper.on('exit', function(code){
+            end = new Date()
+            elapsed = start - end
+            elapsed = elapsed * -1
             if(code== 10){
-                rdata = '<status>ok</status>';
+                rdata = '<pingdom_http_custom_check><status>ok</status><response_time>' + elapsed + '</response_time></pingdom_http_custom_check>';
             }
             else{
-                rdata = '<status>fail</status>';
+                rdata = '<pingdom_http_custom_check><status>down</status><elapsed>' + elapsed + '</time><pingdom_http_custom_check>';
             }
-            reply(rdata);
+            reply(rdata).type('text/xml');
         });
     }
 });
