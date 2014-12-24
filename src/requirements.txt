@@ -1,0 +1,3 @@
+casperjs@1.1.0-beta3
+hapi@7.1.1
+phantomjs@1.9.11
