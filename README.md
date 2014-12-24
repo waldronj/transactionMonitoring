@@ -3,7 +3,7 @@ Transaction Monitoring
 
 This application is intended to allow external monitoring solutions such as Pingdom / SiteUptime etc, to hit a webpage and return back the appropriate response should your underlying casperjs test is successful.
 
-Techonologies
+Technologies
 ============
 Transaction Monitoring leverages https://github.com/hapijs/hapi for it's web server and the creates a subprocess in which http://docs.casperjs.org is called to do the web testing.
 
