@@ -3,17 +3,34 @@ var Hapi = require('hapi');
 var server = new Hapi.Server();
 server.connection({ port: 3000 });
 
+exports.register = function (server, options, next) {
+
+    files.relativeTo(__dirname)
+    console.log(server.realm.modifiers.route.prefix);
+    return next();
+};
+
 server.route({
     method: 'GET',
     path: '/',
     handler: function (request, reply) {
-        reply('Transaction Monitoring');
+        reply.file('./index.html');
     }
 });
 
 server.route({
     method: 'GET',
-    path: '/{name}',
+    path: '/public/{param*}',
+    handler: {
+        directory: {
+            path: './public'
+        }
+    }
+});
+
+server.route({
+    method: 'GET',
+    path: '/checks/{name}',
     handler: function (request, reply) {
         console.log(request.params.name);
         var spawn = require('child_process').spawn,
