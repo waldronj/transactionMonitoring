@@ -14,7 +14,7 @@ server.route({
     method: 'GET',
     path: '/',
     handler: function (request, reply) {
-        reply.file('./index.html');
+        reply.file('./views/index.html');
     }
 });
 
