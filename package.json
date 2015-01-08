@@ -1,0 +1,30 @@
+{
+  "name": "transactionMonitoring",
+  "version": "0.0.1",
+  "description": "Transaction Monitoring of web front ends from casperjs tests",
+  "main": "./src/app.js",
+  "dependencies": {
+    "phantomjs": "^1.9.13"
+    "casperjs": "1.1.0-beta3"
+    "hapi": "8.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/waldronj/transactionMonitoring.git"
+  },
+  "keywords": [
+    "casperjs",
+    "testing",
+    "monitoring"
+  ],
+  "author": "Josh Waldron",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/waldronj/transactionMonitoring/issues"
+  },
+  "homepage": "https://github.com/waldronj/transactionMonitoring"
+}
