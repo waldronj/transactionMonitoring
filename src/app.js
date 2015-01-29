@@ -1,4 +1,5 @@
 var Hapi = require('hapi');
+var fs = require('fs');
 
 var server = new Hapi.Server();
 server.connection({ port: 3000 });
@@ -9,6 +10,30 @@ exports.register = function (server, options, next) {
     console.log(server.realm.modifiers.route.prefix);
     return next();
 };
+
+function getData(file, callback){
+    var rData = "";
+    fs.readFile(file, {encoding: 'utf-8'}, function(err,data){
+        if (!err){
+            callback(data);
+        }
+        else{
+            console.log(err);
+        }
+    });
+}
+
+server.route({
+    method: 'POST',
+    path: '/api/1.0/check/add',
+    handler: function (request, reply) {
+        console.log(request.payload);
+        getData('/Users/jwaldron/data.json', function(data){
+            reply(data);
+        });
+    }
+});
+
 
 server.route({
     method: 'GET',
