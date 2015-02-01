@@ -1,24 +1,12 @@
 var fs = require('fs');
 module.exports = {
-    getData: function (file, callback){
-        var rData = "";
-        fs.readFile(file, {encoding: 'utf-8'}, function(err,data){
-            if (!err){
-                callback(data);
-            }
-            else{
-                console.log(err);
-            }
-        });
-    },
-    
-    add: function(url, element, callback){
-        start(url, function(startUrl){
-            exist(element, function(existString){
+    add: function(json, callback){
+        start(json.check.url, function(startUrl){
+            exist(json.check.transaction['step1'], function(existString){
                 callback(startUrl + existString);
             }); 
         });
-    }
+    },
 };
 
 String.format = function() {

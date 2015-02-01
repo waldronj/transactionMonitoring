@@ -1,6 +1,8 @@
 var Hapi = require('hapi');
 var server = new Hapi.Server();
 var check = require('./addCheck.js');
+var Joi = require('joi');
+
 server.connection({ port: 3000 });
 
 exports.register = function (server, options, next) {
@@ -10,15 +12,28 @@ exports.register = function (server, options, next) {
     return next();
 };
 
+/*
+Actions: present, validate, click, fill
+*/
+
 server.route({
     method: 'POST',
     path: '/api/1.0/check/add',
     handler: function (request, reply) {
-        var json = JSON.parse(request.payload);
-        check.add(json["URL"], json["exist"], function(data){
-            console.log(data);
-            reply(data);
-        });
+        reply(request.payload);
+    },
+    config: {
+        validate: {
+            payload: {
+                check: Joi.string().required(),
+                url: Joi.string().required(),
+                transaction: Joi.array().includes(Joi.object().keys({
+                    action: Joi.string().required(),
+                    selector: Joi.string().required(),
+                    text: Joi.string()
+                })).required(),
+            }
+        }
     }
 });
 
