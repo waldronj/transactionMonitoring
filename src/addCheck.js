@@ -1,11 +1,25 @@
 var fs = require('fs');
 module.exports = {
-    add: function(json, callback){
-        start(json.check.url, function(startUrl){
-            exist(json.check.transaction['step1'], function(existString){
-                callback(startUrl + existString);
-            }); 
-        });
+    add: function(json){
+        start(json["url"]);
+        for(var i in json["transaction"]){
+            var action = json["transaction"][i]["action"];
+            var selector = json["transaction"][i]["action"];
+            var text = json["transaction"][i]["text"];
+            switch(action){
+                case "exist":
+                    exists(selector);
+                    break;
+                case "validate":
+                    validate(selector, text);
+                    break;
+                case "fill":
+                    fill(selector, text);
+                    break;
+                default:
+                    console.log("invalid action passed");
+            }
+        }    
     },
 };
 
@@ -18,12 +32,27 @@ String.format = function() {
     return theString;
 }
 
-function start(url, callback){
+function start(url){
     var startUrl = String.format("casper.start('{0}');\n", url);
-    callback(startUrl);
+    console.log(startUrl);
 }
 
-function exist(element, callback){
-    var existString = String.format("casper.then(function(){\nthis.click({0});\n});", element);
-    callback(existString);
+function exists(selector){
+    var existString = String.format("casper.then(function(){\nthis.assert({0});\n});", selector);
+    console.log(existString);
+};
+
+function validate(selector, text){
+    var existString = String.format("casper.then(function(){\nthis.contains({0});\n});", selector, text);
+    console.log(existString);
+};
+
+function click(selector){
+    var existString = String.format("casper.then(function(){\nthis.click({0});\n});", selector);
+    console.log(existString);
+};
+
+function fill(selector, text){
+    var existString = String.format("this.sendKeys(json['selector'], json['text']);", selector);
+    console.log(existString);
 };

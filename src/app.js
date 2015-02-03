@@ -20,6 +20,7 @@ server.route({
     method: 'POST',
     path: '/api/1.0/check/add',
     handler: function (request, reply) {
+        check.add(request.payload);
         reply(request.payload);
     },
     config: {
@@ -72,7 +73,7 @@ server.route({
         casper.on('exit', function(code){
             end = new Date()
             elapsed = (end - start) / 1000
-            if(code == 10){
+            if(code == 0){
                 rdata = '<pingdom_http_custom_check><status>ok</status><response_time>' + elapsed + '</response_time></pingdom_http_custom_check>';
             }
             else{
