@@ -1,25 +1,31 @@
 var fs = require('fs');
 module.exports = {
     add: function(json){
-        start(json["url"]);
+        var casperTest = [];
+        casperTest.push(start(json["check"], json["transaction"].length, json["url"]));
         for(var i in json["transaction"]){
             var action = json["transaction"][i]["action"];
             var selector = json["transaction"][i]["selector"];
             var text = json["transaction"][i]["text"];
             switch(action){
-                case "exist":
-                    exists(selector);
+                case "present":
+                    casperTest.push(present(selector));
                     break;
                 case "validate":
-                    validate(selector, text);
+                    casperTest.push(validate(selector, text));
                     break;
                 case "fill":
-                    fill(selector, text);
+                    casperTest.push(fill(selector, text));
                     break;
+                case "click":
+                    casperTest.push(click(selector));
                 default:
                     console.log("invalid action passed");
             }
-        }    
+        }
+        casperTest.push(end());
+        console.log(casperTest);
+        saveCheck(json["check"], casperTest);
     },
 };
 
@@ -32,27 +38,41 @@ String.format = function() {
     return theString;
 }
 
-function start(url){
-    var startUrl = String.format("casper.start('{0}');\n", url);
-    console.log(startUrl);
+function start(checkName, testCount, url){
+    var testStart = String.format("casper.test.begin(\"{0}\", {1}, function suite(test) {casper.start(\"{2}\");" , checkName, testCount, url);
+    return testStart;
 }
 
-function exists(selector){
-    var existString = String.format("casper.then(function(){\nthis.assert({0});\n});\n", selector);
-    console.log(existString);
+function present(selector){
+    var stringPresent = String.format("casper.then(function(){test.assertExists(\"{0}\",\"{0} found\");});" , selector);
+    return stringPresent;
 };
 
 function validate(selector, text){
-    var existString = String.format("casper.then(function(){\nthis.contains({0});\n});\n", selector, text);
-    console.log(existString);
+    var validate = String.format("casper.then(function(){test.assertExists(\"{0}\",\"{0} found\");});", selector, text);
+    return existString;
 };
 
 function click(selector){
-    var existString = String.format("casper.then(function(){\nthis.click({0});\n});\n", selector);
-    console.log(existString);
+    var existString = String.format("casper.then(function(){this.click({0});});", selector);
+    return existString;
 };
 
 function fill(selector, text){
-    var existString = String.format("this.sendKeys(json['selector'], json['text']);\n", selector);
-    console.log(existString);
+    var existString = String.format("this.sendKeys(json['selector'], json['text']);", selector);
+    return existString;
 };
+
+function end(){
+    var end = String.format("casper.run(function(){test.done();});});")
+    return end;
+}
+
+function saveCheck(check, casperTest){
+    for(var i in casperTest){
+        console.log(casperTest[i]);
+        fs.appendFile("./siteTests/" + check + ".js", casperTest[i], function(err) {
+            if(err) return console.log(err);
+        });
+    }
+}

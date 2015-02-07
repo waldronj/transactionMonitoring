@@ -29,7 +29,7 @@ server.route({
                 check: Joi.string().required(),
                 url: Joi.string().required(),
                 transaction: Joi.array().includes(Joi.object().keys({
-                    action: Joi.string().required(),
+                    action: Joi.string().valid(["present","validate","click", "fill"]).required(),
                     selector: Joi.string().required(),
                     text: Joi.string()
                 })).required(),
@@ -37,7 +37,6 @@ server.route({
         }
     }
 });
-
 
 server.route({
     method: 'GET',
