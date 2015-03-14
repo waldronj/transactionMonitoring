@@ -1,14 +1,11 @@
-casper.start('http://google.com');
+casper.test.begin('Google test, ensure logo exists', 1, function suite(test){
+    casper.start('http://google.com');
 
-casper.then(function(){
-    if(this.exists('img#hplogo123')){
-        console.log("success");
-        this.exit([10]);
-    }
-    else{
-        console.log("failed");
-        this.exit();
-    }
+    casper.then(function(){
+        test.asserExists('img#hplogo123')
+    });
+
+    casper.run(function(){
+        test.done();
+    });
 });
-
-casper.run();
