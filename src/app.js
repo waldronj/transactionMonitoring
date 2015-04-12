@@ -28,6 +28,17 @@ server.route({
 });
 
 server.route({
+    method: 'GET',
+    path: '/app/{param*}',
+    handler: {
+        directory: {
+            path: './app'
+        }
+    }
+});
+
+
+server.route({
     method: 'POST',
     path: '/api/1.0/check/add',
     handler: function (request, reply) {
@@ -81,9 +92,10 @@ server.route({
         var spawn = require('child_process').spawn,
         start = new Date();
         casper = spawn('casperjs', ['test', './siteTests/' + request.params.name + '.js']);
-        
+        var output = []        
         casper.stdout.on('data', function (data) {
             console.log('' + data);
+            output.push('' + data);
         });
         
         casper.on('exit', function(code){
@@ -95,7 +107,8 @@ server.route({
             else{
                 rdata = '<pingdom_http_custom_check><status>down</status><response_time>' + elapsed + '</response_time></pingdom_http_custom_check>';
             }
-            reply(rdata).type('text/xml');
+            //reply(rdata).type('text/xml');
+            reply(output);
         });
     }
 });
