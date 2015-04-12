@@ -2,6 +2,7 @@ var Hapi = require('hapi');
 var server = new Hapi.Server();
 var check = require('./addCheck.js');
 var Joi = require('joi');
+var fs = require('fs');
 
 server.connection({ port: 3000 });
 
@@ -15,6 +16,16 @@ exports.register = function (server, options, next) {
 /*
 Actions: present, validate, click, fill
 */
+
+server.route({
+    method: 'GET',
+    path: '/public/{param*}',
+    handler: {
+        directory: {
+            path: './public'
+        }
+    }
+});
 
 server.route({
     method: 'POST',
@@ -48,13 +59,19 @@ server.route({
 
 server.route({
     method: 'GET',
-    path: '/public/{param*}',
-    handler: {
-        directory: {
-            path: './public'
-        }
+    path: '/list',
+    handler: function (request, reply) {
+        var tests = fs.readdir('./siteTests', function(err, files){
+            var checks = []
+            for(f in files){
+                check = files[f].substring(0, files[f].indexOf('.'));
+                checks.push({ 'checkname': check});
+            }
+            reply(JSON.stringify(checks));
+        });
     }
 });
+
 
 server.route({
     method: 'GET',

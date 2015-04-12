@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="CheckApp">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,6 +22,8 @@
     <link href="public/css/style-responsive.css" rel="stylesheet">
 
     <script src="public/js/chart-master/Chart.js"></script>
+    <script src="public/js/angular.js"></script>
+    <script src="public/js/angular-route.min.js"></script>
     
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -88,7 +90,35 @@
                       <!--CUSTOM CHART START -->
                       <div class="border-head">
                           <div class='form-panel'>
-                          <h3>Welcome to Transaction Monitoring</h3>
+                            <h3>Welcome to Transaction Monitoring</h3>
+                            <p>
+                            Transaction monitoring enables developers to push tests created in a development environment leveraging CasperJS to a production environment and allow the application to be monitored in a consistent way. No more just checking if the page loads, does the application respond how a customer expects it to?
+                            </p>
+                            <img src="public/img/CasperJS.png" alt="CasperJS Test Results" height="300px" width="1000px">
+                            <p><pre>
+casper.test.begin('Google test, find first h3 and select it', 1, function suite(test){
+    casper.start('http://google.fr/');
+
+    casper.thenEvaluate(function(term) {
+        document.querySelector('input[name="q"]').setAttribute('value', term);
+        document.querySelector('form[name="f"]').submit();
+    }, 'CasperJS');
+
+    casper.then(function() {
+        // Click on 1st result link
+        this.click('h3.r a');
+    });
+
+    casper.then(function() {
+        test.assertUrlMatch("http://casperjs.org/")
+    });
+    
+    casper.run(function(){
+        test.done();
+    });
+});
+
+                            </pre></p>
                           </div><!--/div form-panel -->
                       </div>
                      </div><!-- /row -->	
@@ -98,18 +128,18 @@
       RIGHT SIDEBAR CONTENT
       *********************************************************************************************************************************************************** -->                  
                   
-                  <div class="col-lg-3 ds">
+                  <div class="col-lg-3 ds" ng-controller="checksController">
                     <!--COMPLETED ACTIONS DONUTS CHART-->
 						<h3>All Checks</h3>
                                         
                       <!-- First Action -->
-                      <div class="desc">
+                      <div class="desc" ng-repeat="d in data">
                       	<div class="thumb">
                       		<span class="badge bg-theme"><i class="fa fa-clock-o"></i></span>
                       	</div>
                       	<div class="details">
-                      		<p><muted>2 Minutes Ago</muted><br/>
-                      		   <a href="#">James Brown</a> subscribed to your newsletter.<br/>
+                      		<p>
+                                <a href="/checks/{{d.checkname}}">{{d.checkname}}</a>
                       		</p>
                       	</div>
                       </div>
@@ -185,6 +215,30 @@
             var to = $("#" + id).data("to");
             console.log('nav ' + nav + ' to: ' + to.month + '/' + to.year);
         }
+    </script>
+    <script>
+        angular.module('CheckApp', ['ChecksApi.services', 'ChecksApi.controllers']);
+
+        angular.module('ChecksApi.services', []).
+        factory('checksAPIService', function($http) {
+            var checksAPI= {};
+            checksAPI.getChecks = function() {
+                return $http({
+                    method: 'GET', 
+                    url: '/list'
+                });
+            }
+            return checksAPI;
+        });
+
+        angular.module('ChecksApi.controllers', []).
+            controller('checksController', function($scope, checksAPIService) {
+                $scope.data = [];
+                checksAPIService.getChecks().success(function (response) {
+                    $scope.data = response;
+                });
+            });
+        
     </script>
   
 
