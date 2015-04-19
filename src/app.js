@@ -37,7 +37,6 @@ server.route({
     }
 });
 
-
 server.route({
     method: 'POST',
     path: '/api/1.0/check/add',
@@ -92,10 +91,8 @@ server.route({
         var spawn = require('child_process').spawn,
         start = new Date();
         casper = spawn('casperjs', ['test', './siteTests/' + request.params.name + '.js']);
-        var output = []        
         casper.stdout.on('data', function (data) {
             console.log('' + data);
-            output.push('' + data);
         });
         
         casper.on('exit', function(code){
@@ -107,11 +104,40 @@ server.route({
             else{
                 rdata = '<pingdom_http_custom_check><status>down</status><response_time>' + elapsed + '</response_time></pingdom_http_custom_check>';
             }
-            //reply(rdata).type('text/xml');
-            reply(output);
+            reply(rdata).type('text/xml');
         });
     }
 });
+
+server.route({
+    method: 'GET',
+    path: '/harness/{name}',
+    handler: function (request, reply) {
+        console.log(request.params.name);
+        var spawn = require('child_process').spawn,
+        output = []
+        casper = spawn('casperjs', ['test', './siteTests/' + request.params.name + '.js', '--xunit=./results/' + request.params.name + '.log']);
+        casper.stdout.on('data', function (data) {
+            console.log('' + data);
+            output.push('' + data);
+        });
+        
+        casper.on('exit', function(code){
+            fs.readFile('./results/' + request.params.name + '.log', function(err, data){
+                reply(data).type('text/xml'); 
+            });
+        });
+    }
+});
+
+server.route({
+    method: 'GET',
+    path: '/harness',
+    handler: function (request, reply) {
+        reply.file('views/harness.html');
+    }
+});
+
 
 server.start(function () {
     console.log('Server running at:', server.info.uri);

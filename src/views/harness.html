@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="CheckApp">
+<html lang="en" ng-app="HarnessApp">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -65,17 +65,18 @@
               
               	  <p class="centered"><a href="profile.html"><img src="public/img/ui-sam.jpg" class="img-circle" width="60"></a></p>
               	  <h5 class="centered">Transaction Monitoring</h5>
+              	  	
                   <li class="mt">
-                      <a class="active" href="/harness">
+                      <a href="/">
                           <i class="fa fa-cogs"></i>
-                          <span>Home<span>
+                          <span>Home</span>
                       </a>
                   </li>
-             	  	
+
                   <li>
-                      <a href="/harness">
+                      <a class="active" href="/harness">
                           <i class="fa fa-cogs"></i>
-                          <span>Test Harness<span>
+                          <span>Test Harness</span>
                       </a>
                   </li>
               </ul>
@@ -88,43 +89,17 @@
       MAIN CONTENT
       *********************************************************************************************************************************************************** -->
       <!--main content start-->
-      <section id="main-content">
+      <section id="main-content" >
           <section class="wrapper">
-              <div class="row">
+              <div class="row" ng-controller="checksController">
                   <div class="col-lg-9 main-chart">
 					<div class="row mt">
                       <!--CUSTOM CHART START -->
                       <div class="border-head">
-                          <div class='form-panel'>
-                            <h3>Welcome to Transaction Monitoring</h3>
-                            <p>
-                            Transaction monitoring enables developers to push tests created in a development environment leveraging CasperJS to a production environment and allow the application to be monitored in a consistent way. No more just checking if the page loads, does the application respond how a customer expects it to?
-                            </p>
-                            <img src="public/img/CasperJS.png" alt="CasperJS Test Results" height="300px" width="1000px">
-                            <p><pre>
-casper.test.begin('Google test, find first h3 and select it', 1, function suite(test){
-    casper.start('http://google.fr/');
-
-    casper.thenEvaluate(function(term) {
-        document.querySelector('input[name="q"]').setAttribute('value', term);
-        document.querySelector('form[name="f"]').submit();
-    }, 'CasperJS');
-
-    casper.then(function() {
-        // Click on 1st result link
-        this.click('h3.r a');
-    });
-
-    casper.then(function() {
-        test.assertUrlMatch("http://casperjs.org/")
-    });
-    
-    casper.run(function(){
-        test.done();
-    });
-});
-
-                            </pre></p>
+                          <div class='form-panel' >
+                            <h3>Test Harness</h3>
+                            <h4>Clicking on a check to the right will execute the test and return results below:</h4> 
+                            <pre class="prettyprint" ng-bind="results"></pre>
                           </div><!--/div form-panel -->
                       </div>
                      </div><!-- /row -->	
@@ -133,10 +108,9 @@ casper.test.begin('Google test, find first h3 and select it', 1, function suite(
       <!-- **********************************************************************************************************************************************************
       RIGHT SIDEBAR CONTENT
       *********************************************************************************************************************************************************** -->                  
-                  
-                  <div class="col-lg-3 ds" ng-controller="checksController">
+                    <div class="col-lg-3 ds"> 
                     <!--COMPLETED ACTIONS DONUTS CHART-->
-						<h3>Monitoring Checks for Third Party</h3>
+						<h3>Test Cases</h3>
                                         
                       <!-- First Action -->
                       <div class="desc" ng-repeat="d in data">
@@ -145,13 +119,12 @@ casper.test.begin('Google test, find first h3 and select it', 1, function suite(
                       	</div>
                       	<div class="details">
                       		<p>
-                                <a href="/checks/{{d.checkname}}">{{d.checkname}}</a>
+                                <span ng-click="runTest($index)" class="harnessLink">{{d.checkname}}</span>
                       		</p>
                       	</div>
-                      </div>
-                                            
-                  </div><!-- /col-lg-3 -->
-              </div><! --/row -->
+                      </div>                      
+                    </div><!-- /col-lg-3 -->
+                  </div><! --/row -->
           </section>
       </section>
 
@@ -187,6 +160,7 @@ casper.test.begin('Google test, find first h3 and select it', 1, function suite(
     <!--script for this page-->
     <script src="public/js/sparkline-chart.js"></script>    
 	<script src="public/js/zabuto_calendar.js"></script>	
+    <script src="public/js/vkbeautify.js"></script>
 	
 	<script type="application/javascript">
         $(document).ready(function () {
@@ -222,32 +196,6 @@ casper.test.begin('Google test, find first h3 and select it', 1, function suite(
             console.log('nav ' + nav + ' to: ' + to.month + '/' + to.year);
         }
     </script>
-    <script>
-        angular.module('CheckApp', ['ChecksApi.services', 'ChecksApi.controllers']);
-
-        angular.module('ChecksApi.services', []).
-        factory('checksAPIService', function($http) {
-            var checksAPI= {};
-            checksAPI.getChecks = function() {
-                return $http({
-                    method: 'GET', 
-                    url: '/list'
-                });
-            }
-            return checksAPI;
-        });
-
-        angular.module('ChecksApi.controllers', []).
-            controller('checksController', function($scope, checksAPIService) {
-                $scope.data = [];
-                checksAPIService.getChecks().success(function (response) {
-                    $scope.data = response;
-                });
-            });
-        
-    </script>
-     <script src="/app/app.js"></script>
- 
-
+    <script src="/app/app.js"></script>
   </body>
 </html>
