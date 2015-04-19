@@ -16,9 +16,10 @@ Getting Started
 
 Using
 -----
-Start your app `node app.js` load the webpage in a broswer, `localhost` this should return "Transaction Monitoring" to test your custom CasperJS scripts navigate to `localhost/googleFR` as an example. Notice googleFR is already in the siteTests folder.
+Start your app `node app.js` load the webpage in a broswer, `localhost` this should return "Transaction Monitoring" to test your custom CasperJS scripts navigate to `localhost/checks/googleFR` as an example. Notice googleFR is already in the siteTests folder.
 
 
-WebUI
+Acknowledgements
 -----
-The web UI theme is provided by http://www.blacktie.co/demo/dashgumfree/index.html under the Creative License, http://www.blacktie.co/about-themes/ 
+* The web UI theme is provided by http://www.blacktie.co/demo/dashgumfree/index.html under the Creative License, http://www.blacktie.co/about-themes/ 
+* The xml formatting on the test harness is accomplished using vkbeautify under the MIT license
